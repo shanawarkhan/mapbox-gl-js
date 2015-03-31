@@ -19,7 +19,7 @@ navigation:
 {{#classes}}
 <h2>{{name}}</h2>
 
-{{description}}
+{{{description}}}
 
 {{#if constructor}}
 <h3>Constructor</h3>
@@ -32,7 +32,7 @@ navigation:
     <tr>
         <td>{{>signature}}</td>
         <td>
-            {{description}}
+            {{{description}}}
             {{#examples}}
             <h4>Code Example</h4>
             {% highlight js %}{{{.}}}{% endhighlight %}
@@ -43,14 +43,14 @@ navigation:
 </table>
 {{/if}}
 
-{{#if staticMethods}}
+{{#if members.static}}
 <h3>Static Members</h3>
-{{> methods methods=staticMethods}}
+{{> methods methods=members.static}}
 {{/if}}
 
-{{#if instanceMethods}}
+{{#if members.instance}}
 <h3>Instance Members</h3>
-{{> methods methods=instanceMethods}}
+{{> methods methods=members.instance}}
 {{/if}}
 
 {{/classes}}
