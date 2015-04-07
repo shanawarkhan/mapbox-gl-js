@@ -48,7 +48,8 @@ function GeoJSONSource(options) {
         abort: this._abortTile.bind(this),
         unload: this._unloadTile.bind(this),
         add: this._addTile.bind(this),
-        remove: this._removeTile.bind(this)
+        remove: this._removeTile.bind(this),
+        redoPlacement: this._redoTilePlacement.bind(this)
     });
 }
 
@@ -148,6 +149,12 @@ GeoJSONSource.prototype = util.inherit(Evented, /** @lends GeoJSONSource.prototy
             }
 
             tile.loadVectorData(data);
+
+            if (tile.redoWhenDone) {
+                tile.redoWhenDone = false;
+                tile.redoPlacement(this);
+            }
+
             this.fire('tile.load', {tile: tile});
 
         }.bind(this), this.workerID);
@@ -169,5 +176,11 @@ GeoJSONSource.prototype = util.inherit(Evented, /** @lends GeoJSONSource.prototy
         tile.unloadVectorData(this.map.painter);
         this.glyphAtlas.removeGlyphs(tile.uid);
         this.dispatcher.send('remove tile', { uid: tile.uid, source: this.id }, null, tile.workerID);
+    },
+
+    redoPlacement: Source.redoPlacement,
+
+    _redoTilePlacement: function(tile) {
+        tile.redoPlacement(this);
     }
 });

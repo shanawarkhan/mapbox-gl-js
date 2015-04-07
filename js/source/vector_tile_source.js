@@ -42,18 +42,6 @@ VectorTileSource.prototype = util.inherit(Evented, {
         this._pyramid.reload();
     },
 
-    redoPlacement: function() {
-        if (!this._pyramid) {
-            return;
-        }
-
-        var ids = this._pyramid.orderedIDs();
-        for (var i = 0; i < ids.length; i++) {
-            var tile = this._pyramid.getTile(ids[i]);
-            this._redoTilePlacement(tile);
-        }
-    },
-
     render: Source._renderTiles,
     featuresAt: Source._vectorFeaturesAt,
 
@@ -93,7 +81,7 @@ VectorTileSource.prototype = util.inherit(Evented, {
 
         if (tile.redoWhenDone) {
             tile.redoWhenDone = false;
-            this._redoTilePlacement(tile);
+            tile.redoPlacement(this);
         }
 
         this.fire('tile.load', {tile: tile});
@@ -118,32 +106,9 @@ VectorTileSource.prototype = util.inherit(Evented, {
         this.dispatcher.send('remove tile', { uid: tile.uid, source: this.id }, null, tile.workerID);
     },
 
+    redoPlacement: Source.redoPlacement,
+
     _redoTilePlacement: function(tile) {
-
-        if (!tile.loaded || tile.redoingPlacement) {
-            tile.redoWhenDone = true;
-            return;
-        }
-
-        tile.redoingPlacement = true;
-
-        this.dispatcher.send('redo placement', {
-            uid: tile.uid,
-            source: this.id,
-            angle: this.map.transform.angle,
-            pitch: this.map.transform.pitch,
-            collisionDebug: this.map.collisionDebug
-        }, done.bind(this), tile.workerID);
-
-        function done(_, data) {
-            tile.reloadSymbolData(data, this.map.painter);
-            this.fire('tile.load', {tile: tile});
-
-            tile.redoingPlacement = false;
-            if (tile.redoWhenDone) {
-                this._redoTilePlacement(tile);
-                tile.redoWhenDone = false;
-            }
-        }
+        tile.redoPlacement(this);
     }
 });
