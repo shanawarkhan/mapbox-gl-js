@@ -5,7 +5,7 @@ var map = new mapboxgl.Map({
     container: 'map',
     zoom: 12.5,
     center: [38.888, -77.01866],
-    style: '/debug/style.json',
+    style: '/debug/bright-v7.json',
     hash: true
 });
 
