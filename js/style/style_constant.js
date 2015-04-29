@@ -24,10 +24,10 @@ exports.resolve = function resolve(value, constants) {
 
     function resolveArray(value) {
         if (Array.isArray(value)) {
-            for (var x in value) {
+            for (var x = 0; x < value.length; x++) {
                 value[x] = resolveArray(value[x]);
                 if (value[x] in constants) {
-                    value[x] = resolve(value[x]);
+                    value[x] = resolveInner(value[x]);
                 }
             }
         }

@@ -31,8 +31,8 @@ test('StyleConstant.resolve', function(t) {
         var darken = ["mix", 50, ["lighten", 20, "@black"], "green"];
 
         var constants = {
-            "@white": "#FFF",
-            "@black": "#000",
+            "@white": { type: 'color', value: "#FFF" },
+            "@black": { type: 'color', value: "#000" },
             "@a": "a"
         };
 
@@ -54,7 +54,7 @@ test('StyleConstant.resolve', function(t) {
             "stops": [[0, "@a"], [1, ["lighten", -20, "@a"]]]
         };
         var constants = {
-            "@a": "#ccc"
+            "@a": { type: 'color', value: "#ccc" }
         };
 
         t.deepEqual(StyleConstant.resolve(fun, constants), {
