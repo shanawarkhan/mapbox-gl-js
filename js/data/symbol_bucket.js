@@ -137,12 +137,15 @@ SymbolBucket.prototype.addFeature = function(lines, shapedText, shapedIcon) {
         textBoxScale = collision.tilePixelRatio * fontScale,
         iconBoxScale = collision.tilePixelRatio * layout['icon-max-size'],
         symbolMinDistance = collision.tilePixelRatio * layout['symbol-min-distance'],
+        textRepeatDistance = collision.tilePixelRatio * layout['text-repeat-distance'],
         avoidEdges = layout['symbol-avoid-edges'],
         textPadding = layout['text-padding'] * collision.tilePixelRatio,
         iconPadding = layout['icon-padding'] * collision.tilePixelRatio,
         textMaxAngle = layout['text-max-angle'] / 180 * Math.PI,
         textAlongLine = layout['text-rotation-alignment'] === 'map' && layout['symbol-placement'] === 'line',
         iconAlongLine = layout['icon-rotation-alignment'] === 'map' && layout['symbol-placement'] === 'line';
+
+    console.log("text-repeat-distance:" + layout['text-repeat-distance']);    
 
     if (layout['symbol-placement'] === 'line') {
         lines = clipLine(lines, 0, 0, 4096, 4096);
@@ -169,6 +172,8 @@ SymbolBucket.prototype.addFeature = function(lines, shapedText, shapedIcon) {
                         iconBoxScale, iconPadding, iconAlongLine));
         }
     }
+
+    // Add filter for text-repeat-distance here???
 };
 
 SymbolBucket.prototype.placeFeatures = function(buffers, collisionDebug) {
