@@ -145,7 +145,9 @@ SymbolBucket.prototype.addFeature = function(lines, shapedText, shapedIcon) {
         textAlongLine = layout['text-rotation-alignment'] === 'map' && layout['symbol-placement'] === 'line',
         iconAlongLine = layout['icon-rotation-alignment'] === 'map' && layout['symbol-placement'] === 'line';
 
-    console.log("text-repeat-distance:" + layout['text-repeat-distance']);    
+    var compareText {};    
+
+    //console.log("text-repeat-distance:" + layout['text-repeat-distance']);    
 
     if (layout['symbol-placement'] === 'line') {
         lines = clipLine(lines, 0, 0, 4096, 4096);
@@ -163,6 +165,17 @@ SymbolBucket.prototype.addFeature = function(lines, shapedText, shapedIcon) {
         for (var j = 0, len = anchors.length; j < len; j++) {
             var anchor = anchors[j];
 
+            // Filter anchors by same text-field or icon-image
+            if (shapedText) {
+                var text = this.text;
+                // Add anchor to compareText
+                if (text in compareText) {
+                compareText[text] = {};
+                }
+
+            }
+
+
             var inside = !(anchor.x < 0 || anchor.x > 4096 || anchor.y < 0 || anchor.y > 4096);
 
             if (avoidEdges && !inside) continue;
@@ -173,7 +186,6 @@ SymbolBucket.prototype.addFeature = function(lines, shapedText, shapedIcon) {
         }
     }
 
-    // Add filter for text-repeat-distance here???
 };
 
 SymbolBucket.prototype.placeFeatures = function(buffers, collisionDebug) {
