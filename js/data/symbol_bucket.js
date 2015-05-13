@@ -145,7 +145,7 @@ SymbolBucket.prototype.addFeature = function(lines, shapedText, shapedIcon) {
         textAlongLine = layout['text-rotation-alignment'] === 'map' && layout['symbol-placement'] === 'line',
         iconAlongLine = layout['icon-rotation-alignment'] === 'map' && layout['symbol-placement'] === 'line';
 
-    var compareText {};    
+    var compareText = {};    // Object will have keys for each text-field value, with an array value of all its anchors 
 
     //console.log("text-repeat-distance:" + layout['text-repeat-distance']);    
 
@@ -165,14 +165,32 @@ SymbolBucket.prototype.addFeature = function(lines, shapedText, shapedIcon) {
         for (var j = 0, len = anchors.length; j < len; j++) {
             var anchor = anchors[j];
 
-            // Filter anchors by same text-field or icon-image
+            // Filter anchors by same text-field or icon-image (have not implemented icon part yet)
             if (shapedText) {
-                var text = this.text;
+                var text = shapedText.text;
+
                 // Add anchor to compareText
+                // (There's probably a more efficient way to write this)
                 if (text in compareText) {
-                compareText[text] = {};
+                    compareText[text].push(anchor);
+                } else {
+                    compareText[text] = [];
+                    compareText[text].push(anchor);
                 }
 
+                //console.log(text);
+                //console.log(compareText[text]);
+
+                //compare anchors
+
+                for (var k = 0, len = compareText[text].length; k < len - 1; k++) {
+                    if (anchor.dist(compareText[text][k]) < textRepeatDistance) {
+                        console.log(text);
+                        console.log(anchor.dist(compareText[text][k]));
+                        console.log(anchor);
+                        break;
+                    }
+                }
             }
 
 
@@ -184,9 +202,10 @@ SymbolBucket.prototype.addFeature = function(lines, shapedText, shapedIcon) {
                         textBoxScale, textPadding, textAlongLine,
                         iconBoxScale, iconPadding, iconAlongLine));
         }
-    }
-
-};
+      }  
+    };
+//console.log(shapedText.text);
+//};
 
 SymbolBucket.prototype.placeFeatures = function(buffers, collisionDebug) {
 
