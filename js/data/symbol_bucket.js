@@ -171,27 +171,32 @@ SymbolBucket.prototype.addFeature = function(lines, shapedText, shapedIcon) {
 
                 // Add anchor to compareText
                 // (There's probably a more efficient way to write this)
-                if (text in compareText) {
-                    compareText[text].push(anchor);
-                } else {
+                if (!(text in compareText)) {
                     compareText[text] = [];
                     compareText[text].push(anchor);
-                }
-
+                } else {
+                    compareText[text].push(anchor);
                 //console.log(text);
                 //console.log(compareText[text]);
 
                 //compare anchors
 
-                for (var k = 0, len = compareText[text].length; k < len - 1; k++) {
-                    if (anchor.dist(compareText[text][k]) < textRepeatDistance) {
-                        console.log(text);
-                        console.log(anchor.dist(compareText[text][k]));
-                        console.log(anchor);
-                        break;
+                    for (var k = 0, len = compareText[text].length; k < len - 1; k++) { 
+                // ^should maybe change this so it starts comparing the second-to-last anchor first
+                        if (anchor.dist(compareText[text][k]) < textRepeatDistance) {
+                          // ^Why am I getting occasional "Uncaught TypeError: Cannot read property 'dist' of undefined" on this line? 
+                          console.log(text);
+                          console.log(anchor.dist(compareText[text][k]));
+                          console.log(textRepeatDistance);
+                          console.log(anchor);
+                          // delete anchor, and then remove anchor from array
+                          anchors.splice(j, 1);
+                          compareText[text].splice(k, 1);
+                          break; // If it's within textRepeatDistance of 1 anchor, stop looking
+                        }
                     }
                 }
-            }
+            }     
 
 
             var inside = !(anchor.x < 0 || anchor.x > 4096 || anchor.y < 0 || anchor.y > 4096);
