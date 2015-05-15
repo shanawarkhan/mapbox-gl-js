@@ -170,12 +170,11 @@ SymbolBucket.prototype.addFeature = function(lines, shapedText, shapedIcon) {
                 var text = shapedText.text;
 
                 // Add anchor to compareText
-                // (There's probably a more efficient way to write this)
                 if (!(text in compareText)) {
                     compareText[text] = [];
                     compareText[text].push(anchor);
                 } else {
-                //compare anchors
+                //compare distance between anchors with textRepeatDistance
                     for (var k = compareText[text].length - 1; k >= 0; k--) {   
                         if (anchor.dist(compareText[text][k]) < textRepeatDistance) {
                         // ^Why am I getting occasional "Uncaught TypeError: Cannot read property 'dist' of undefined" on this line? 
@@ -186,12 +185,16 @@ SymbolBucket.prototype.addFeature = function(lines, shapedText, shapedIcon) {
                           anchor.skip = true; // do I need to add a skip property value of false to the rest?
                           //console.log(anchor.skip);
                           break; // If it's within textRepeatDistance of 1 anchor, stop looking
-                        } else {
+                        } 
+                    }
+                    
+                    // If anchor is not within textRepeatDistance of any other anchor, add to array
+                    if (!anchor.skip) {    
                             compareText[text].push(anchor);
-                        }
                     }
                 }
-            }     
+            }   
+
 
             var inside = !(anchor.x < 0 || anchor.x > 4096 || anchor.y < 0 || anchor.y > 4096);
 
@@ -203,8 +206,8 @@ SymbolBucket.prototype.addFeature = function(lines, shapedText, shapedIcon) {
                         textBoxScale, textPadding, textAlongLine,
                         iconBoxScale, iconPadding, iconAlongLine));
         }
-      }  
-    };
+    }  
+};
 //console.log(shapedText.text);
 //};
 
