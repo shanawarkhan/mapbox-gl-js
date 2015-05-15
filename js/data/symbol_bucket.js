@@ -175,33 +175,29 @@ SymbolBucket.prototype.addFeature = function(lines, shapedText, shapedIcon) {
                     compareText[text] = [];
                     compareText[text].push(anchor);
                 } else {
-                    compareText[text].push(anchor);
-                //console.log(text);
-                //console.log(compareText[text]);
-
                 //compare anchors
-
-                    for (var k = 0, len = compareText[text].length; k < len - 1; k++) { 
-                // ^should maybe change this so it starts comparing the second-to-last anchor first
+                    for (var k = compareText[text].length - 1; k >= 0; k--) {   
                         if (anchor.dist(compareText[text][k]) < textRepeatDistance) {
-                          // ^Why am I getting occasional "Uncaught TypeError: Cannot read property 'dist' of undefined" on this line? 
+                        // ^Why am I getting occasional "Uncaught TypeError: Cannot read property 'dist' of undefined" on this line? 
                           console.log(text);
                           console.log(anchor.dist(compareText[text][k]));
                           console.log(textRepeatDistance);
                           console.log(anchor);
-                          // delete anchor, and then remove anchor from array
-                          anchors.splice(j, 1);
-                          compareText[text].splice(k, 1);
+                          anchor.skip = true; // do I need to add a skip property value of false to the rest?
+                          //console.log(anchor.skip);
                           break; // If it's within textRepeatDistance of 1 anchor, stop looking
+                        } else {
+                            compareText[text].push(anchor);
                         }
                     }
                 }
             }     
 
-
             var inside = !(anchor.x < 0 || anchor.x > 4096 || anchor.y < 0 || anchor.y > 4096);
 
-            if (avoidEdges && !inside) continue;
+            console.log(anchor.skip);
+            if ((anchor.skip) || (avoidEdges && !inside)) continue;
+            
 
             this.symbolInstances.push(new SymbolInstance(anchor, line, shapedText, shapedIcon, layout, inside,
                         textBoxScale, textPadding, textAlongLine,
