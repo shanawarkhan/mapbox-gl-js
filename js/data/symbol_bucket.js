@@ -27,6 +27,7 @@ function SymbolBucket(buffers, layoutProperties, collision, overscaling, collisi
     this.overscaling = overscaling;
     this.collisionDebug = collisionDebug;
 
+    this.compareText = {}; 
     this.symbolInstances = [];
 
 }
@@ -130,6 +131,8 @@ SymbolBucket.prototype.addFeatures = function() {
 SymbolBucket.prototype.addFeature = function(lines, shapedText, shapedIcon) {
     var layout = this.layoutProperties;
     var collision = this.collision;
+    var compareText = this.compareText;
+    console.log(compareText);
 
     var glyphSize = 24;
 
@@ -144,10 +147,6 @@ SymbolBucket.prototype.addFeature = function(lines, shapedText, shapedIcon) {
         textMaxAngle = layout['text-max-angle'] / 180 * Math.PI,
         textAlongLine = layout['text-rotation-alignment'] === 'map' && layout['symbol-placement'] === 'line',
         iconAlongLine = layout['icon-rotation-alignment'] === 'map' && layout['symbol-placement'] === 'line';
-
-    var compareText = {};    // Object will have keys for each text-field value, with an array value of all its anchors 
-
-    //console.log("text-repeat-distance:" + layout['text-repeat-distance']);    
 
     if (layout['symbol-placement'] === 'line') {
         lines = clipLine(lines, 0, 0, 4096, 4096);
@@ -178,10 +177,10 @@ SymbolBucket.prototype.addFeature = function(lines, shapedText, shapedIcon) {
                     for (var k = compareText[text].length - 1; k >= 0; k--) {   
                         if (anchor.dist(compareText[text][k]) < textRepeatDistance) {
                         // ^Why am I getting occasional "Uncaught TypeError: Cannot read property 'dist' of undefined" on this line? 
-                          console.log(text);
-                          console.log(anchor.dist(compareText[text][k]));
-                          console.log(textRepeatDistance);
-                          console.log(anchor);
+                          //console.log(text);
+                          //console.log(anchor.dist(compareText[text][k]));
+                          //console.log(textRepeatDistance);
+                          //console.log(anchor);
                           anchor.skip = true; // do I need to add a skip property value of false to the rest?
                           //console.log(anchor.skip);
                           break; // If it's within textRepeatDistance of 1 anchor, stop looking
@@ -195,10 +194,9 @@ SymbolBucket.prototype.addFeature = function(lines, shapedText, shapedIcon) {
                 }
             }   
 
-
             var inside = !(anchor.x < 0 || anchor.x > 4096 || anchor.y < 0 || anchor.y > 4096);
 
-            console.log(anchor.skip);
+            //console.log(anchor.skip);
             if ((anchor.skip) || (avoidEdges && !inside)) continue;
             
 
