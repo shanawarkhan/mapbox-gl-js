@@ -6846,8 +6846,8 @@
       ],
       "layout": {
         "text-allow-overlap": false,
-        "symbol-min-distance": 150,
-        "text-repeat-distance": 100,
+        "symbol-min-distance": 200,
+        "text-repeat-distance": 150,
         "icon-image": "{shield}-{reflen}-small",
         "icon-rotation-alignment": "viewport",
         "symbol-avoid-edges": false,
@@ -6911,8 +6911,8 @@
       ],
       "layout": {
         "text-allow-overlap": false,
-        "symbol-min-distance": 150,
-        "text-repeat-distance": 100,
+        "symbol-min-distance": 200,
+        "text-repeat-distance": 150,
         "icon-image": "{shield}-{reflen}-small",
         "icon-rotation-alignment": "viewport",
         "symbol-avoid-edges": false,
@@ -6971,6 +6971,7 @@
       "layout": {
         "text-allow-overlap": false,
         "symbol-min-distance": 500,
+        "text-repeat-distance": 0,
         "text-ignore-placement": false,
         "text-max-angle": 30,
         "text-max-size": {

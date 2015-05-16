@@ -6,7 +6,7 @@ var checkMaxAngle = require('./check_max_angle');
 
 module.exports = getAnchors;
 
-function getAnchors(line, spacing, maxAngle, shapedText, glyphSize, boxScale, overscaling) {
+function getAnchors(line, spacing, firstPadding, maxAngle, shapedText, glyphSize, boxScale, overscaling) {
 
     // Resample a line to get anchor points for labels and check that each
     // potential label passes text-max-angle check and has enough froom to fit
@@ -20,7 +20,10 @@ function getAnchors(line, spacing, maxAngle, shapedText, glyphSize, boxScale, ov
     // Add a bit of extra offset to avoid collisions at T intersections.
     var labelLength = shapedText ? shapedText.right - shapedText.left : spacing;
     var extraOffset = glyphSize * 2;
-    var offset = ((labelLength / 2 + extraOffset) * boxScale * overscaling) % spacing;
+    //var offset = ((labelLength / 2 + extraOffset) * boxScale * overscaling) % spacing;
+    var offset = ((labelLength + firstPadding) / 2 * boxScale * overscaling) % spacing;
+    console.log(firstPadding + " " + offset);
+    //var offset = 7500;
 
     return resample(line, offset, spacing, angleWindowSize, maxAngle, labelLength * boxScale, false);
 }
@@ -59,7 +62,7 @@ function resample(line, offset, spacing, angleWindowSize, maxAngle, labelLength,
 
         distance += segmentDist;
     }
-
+/*
     if (!placeAtMiddle && !anchors.length) {
         // The first attempt at finding anchors at which labels can be placed failed.
         // Try again, but this time just try placing one anchor at the middle of the line.
@@ -67,7 +70,7 @@ function resample(line, offset, spacing, angleWindowSize, maxAngle, labelLength,
         // initial offset used in overscaled tiles is calculated to align labels with positions in
         // parent tiles instead of placing the label as close to the beginning as possible.
         anchors = resample(line, distance / 2, spacing, angleWindowSize, maxAngle, labelLength, true);
-    }
+    }*/
 
     return anchors;
 }
