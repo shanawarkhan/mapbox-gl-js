@@ -22,15 +22,14 @@ function getAnchors(line, spacing, firstPadding, maxAngle, shapedText, glyphSize
     var extraOffset = glyphSize * 2;
     //var offset = ((labelLength / 2 + extraOffset) * boxScale * overscaling) % spacing;
 
-    var firstPoint = line[0];
-    if ((firstPoint.x == (0 || 4096)) || (firstPoint.y == (0 || 4096))) {
+    if ((line[0].x == (0 || 4096)) || (line[0].y == (0 || 4096))) {
         var continuedLine = true;
     }
-    //console.log(firstPoint.x + " " + firstPoint.y + " " + continuedLine);
+    //(continuedLine) { console.log(firstPoint.x + " " + firstPoint.y + " " + continuedLine); }
     var offset = (firstPadding > 0 && continuedLine) ? 
-        ((labelLength + firstPadding) / 2 * boxScale * overscaling) :
+        ((labelLength / 2 + firstPadding) * boxScale * overscaling) :
         ((labelLength / 2 + extraOffset) * boxScale * overscaling);    
-    if (firstPadding > 0) { console.log(continuedLine + " " + firstPadding + " " + offset); }
+    //if (firstPadding > 0) { console.log(continuedLine + " " + labelLength + " " + firstPadding + " " + offset); }
 
     return resample(line, offset, spacing, angleWindowSize, maxAngle, labelLength * boxScale, false);
 }

@@ -5,7 +5,7 @@ var map = new mapboxgl.Map({
     container: 'map',
     zoom: 12.5,
     center: [38.888, -77.01866],
-    style: 'streets-repeat-distance-v7.json',
+    style: 'anchor-placement-road-names.json',
     hash: true
 });
 
