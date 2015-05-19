@@ -21,9 +21,16 @@ function getAnchors(line, spacing, firstPadding, maxAngle, shapedText, glyphSize
     var labelLength = shapedText ? shapedText.right - shapedText.left : spacing;
     var extraOffset = glyphSize * 2;
     //var offset = ((labelLength / 2 + extraOffset) * boxScale * overscaling) % spacing;
-    var offset = ((labelLength + firstPadding) / 2 * boxScale * overscaling) % spacing;
-    console.log(firstPadding + " " + offset);
-    //var offset = 7500;
+
+    var firstPoint = line[0];
+    if ((firstPoint.x == (0 || 4096)) || (firstPoint.y == (0 || 4096))) {
+        var continuedLine = true;
+    }
+    //console.log(firstPoint.x + " " + firstPoint.y + " " + continuedLine);
+    var offset = (firstPadding > 0 && continuedLine) ? 
+        ((labelLength + firstPadding) / 2 * boxScale * overscaling) :
+        ((labelLength / 2 + extraOffset) * boxScale * overscaling);    
+    if (firstPadding > 0) { console.log(continuedLine + " " + firstPadding + " " + offset); }
 
     return resample(line, offset, spacing, angleWindowSize, maxAngle, labelLength * boxScale, false);
 }
@@ -62,7 +69,7 @@ function resample(line, offset, spacing, angleWindowSize, maxAngle, labelLength,
 
         distance += segmentDist;
     }
-/*
+
     if (!placeAtMiddle && !anchors.length) {
         // The first attempt at finding anchors at which labels can be placed failed.
         // Try again, but this time just try placing one anchor at the middle of the line.
@@ -70,7 +77,7 @@ function resample(line, offset, spacing, angleWindowSize, maxAngle, labelLength,
         // initial offset used in overscaled tiles is calculated to align labels with positions in
         // parent tiles instead of placing the label as close to the beginning as possible.
         anchors = resample(line, distance / 2, spacing, angleWindowSize, maxAngle, labelLength, true);
-    }*/
+    }
 
     return anchors;
 }
