@@ -135,7 +135,7 @@ function align(positionedGlyphs, justify, horizontalAlign, verticalAlign, maxLin
 }
 
 
-function shapeIcon(image, layout) {
+function shapeIcon(iconName, image, layout) {
     if (!image || !image.rect) return null;
 
     var dx = layout['icon-offset'][0];
@@ -145,10 +145,11 @@ function shapeIcon(image, layout) {
     var y1 = dy - image.height / 2;
     var y2 = y1 + image.rect.h;
 
-    return new PositionedIcon(image, y1, y2, x1, x2);
+    return new PositionedIcon(iconName, image, y1, y2, x1, x2);
 }
 
-function PositionedIcon(image, top, bottom, left, right) {
+function PositionedIcon(iconName, image, top, bottom, left, right) {
+    this.iconName = iconName;
     this.image = image;
     this.top = top;
     this.bottom = bottom;

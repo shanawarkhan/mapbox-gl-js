@@ -28,6 +28,7 @@ function SymbolBucket(buffers, layoutProperties, collision, overscaling, collisi
     this.collisionDebug = collisionDebug;
 
     this.compareText = {}; 
+    this.compareIcon = {};
     this.symbolInstances = [];
 
 }
@@ -107,7 +108,7 @@ SymbolBucket.prototype.addFeatures = function() {
         if (layout['icon-image']) {
             var iconName = resolveTokens(features[k].properties, layout['icon-image']);
             var image = this.icons[iconName];
-            shapedIcon = shapeIcon(image, layout);
+            shapedIcon = shapeIcon(iconName, image, layout);
 
             if (image) {
                 if (this.sdfIcons === undefined) {
@@ -132,6 +133,7 @@ SymbolBucket.prototype.addFeature = function(lines, shapedText, shapedIcon) {
     var layout = this.layoutProperties;
     var collision = this.collision;
     var compareText = this.compareText;
+    var compareIcon = this.compareIcon;
 
     var glyphSize = 24;
 
@@ -140,6 +142,8 @@ SymbolBucket.prototype.addFeature = function(lines, shapedText, shapedIcon) {
         iconBoxScale = collision.tilePixelRatio * layout['icon-max-size'],
         symbolMinDistance = collision.tilePixelRatio * layout['symbol-min-distance'],
         textRepeatDistance = collision.tilePixelRatio * layout['text-repeat-distance'],
+        iconRepeatDistance = collision.tilePixelRatio * layout['icon-repeat-distance'],
+        firstPadding = layout['text-repeat-distance'],
         avoidEdges = layout['symbol-avoid-edges'],
         textPadding = layout['text-padding'] * collision.tilePixelRatio,
         iconPadding = layout['icon-padding'] * collision.tilePixelRatio,
@@ -156,13 +160,14 @@ SymbolBucket.prototype.addFeature = function(lines, shapedText, shapedIcon) {
 
         // Calculate the anchor points around which you want to place labels
         var anchors = layout['symbol-placement'] === 'line' ?
-            getAnchors(line, symbolMinDistance, textRepeatDistance, textMaxAngle, shapedText, glyphSize, textBoxScale, this.overscaling) :
+            getAnchors(line, symbolMinDistance, firstPadding, textMaxAngle, shapedText, glyphSize, textBoxScale, this.overscaling) :
             [ new Anchor(line[0].x, line[0].y, 0) ];
 
         // For each potential label, create the placement features used to check for collisions, and the quads use for rendering.
         for (var j = 0, len = anchors.length; j < len; j++) {
             var anchor = anchors[j];
 
+            // Skip repeat-distance loops if these property values are 0? Depends what we set default to
             // Filter anchors by same text-field or icon-image (have not implemented icon part yet)
             if (shapedText) {
                 var text = shapedText.text;
@@ -181,7 +186,7 @@ SymbolBucket.prototype.addFeature = function(lines, shapedText, shapedIcon) {
                           //console.log(textRepeatDistance);
                           //console.log(anchor);
                           anchor.skip = true; // do I need to add a skip property value of false to the rest?
-                          //console.log(anchor.skip);
+                          console.log(anchor.skip);
                           break; // If it's within textRepeatDistance of 1 anchor, stop looking
                         } 
                     }
@@ -189,6 +194,24 @@ SymbolBucket.prototype.addFeature = function(lines, shapedText, shapedIcon) {
                     // If anchor is not within textRepeatDistance of any other anchor, add to array
                     if (!anchor.skip) {    
                             compareText[text].push(anchor);
+                    }
+                }
+            }
+
+            if (shapedIcon) {
+                var iconName = shapedIcon.iconName;
+                if (!(iconName in compareIcon)) {
+                    compareIcon[iconName] = [];
+                    compareIcon[iconName].push(anchor);
+                } else {
+                    for (var k = compareIcon[iconName].length -1; k >= 0; k--) {
+                        if (anchor.dist(compareIcon[iconName][k]) < iconRepeatDistance) {
+                            anchor.skip = true;
+                            break;
+                        }
+                    }
+                    if (!anchor.skip) {
+                        compareIcon[iconName].push(anchor);
                     }
                 }
             }   
