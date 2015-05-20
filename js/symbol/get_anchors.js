@@ -6,7 +6,7 @@ var checkMaxAngle = require('./check_max_angle');
 
 module.exports = getAnchors;
 
-function getAnchors(line, spacing, firstPadding, maxAngle, shapedText, glyphSize, boxScale, overscaling) {
+function getAnchors(line, spacing, firstPadding, maxAngle, shapedText, shapedIcon, glyphSize, boxScale, overscaling) {
 
     // Resample a line to get anchor points for labels and check that each
     // potential label passes text-max-angle check and has enough froom to fit
@@ -18,7 +18,13 @@ function getAnchors(line, spacing, firstPadding, maxAngle, shapedText, glyphSize
 
     // Offset the first anchor by half the label length (or half the spacing distance for icons).
     // Add a bit of extra offset to avoid collisions at T intersections.
-    var labelLength = shapedText ? shapedText.right - shapedText.left : spacing;
+    //var labelLength = shapedText ? shapedText.right - shapedText.left : spacing;
+    var labelLength = shapedText && shapedIcon ?
+        Math.max(shapedText.right - shapedText.left, shapedIcon.right - shapedIcon.left) :
+        shapedText ?
+        shapedText.right - shapedText.left :
+        shapedIcon.right - shapedIcon.left;
+
     var extraOffset = glyphSize * 2;
     //var offset = ((labelLength / 2 + extraOffset) * boxScale * overscaling) % spacing;
 
@@ -28,8 +34,8 @@ function getAnchors(line, spacing, firstPadding, maxAngle, shapedText, glyphSize
     //(continuedLine) { console.log(firstPoint.x + " " + firstPoint.y + " " + continuedLine); }
     var offset = (firstPadding > 0 && continuedLine) ? 
         ((labelLength / 2 + firstPadding) * boxScale * overscaling) :
-        ((labelLength / 2 + extraOffset) * boxScale * overscaling);    
-    //if (firstPadding > 0) { console.log(continuedLine + " " + labelLength + " " + firstPadding + " " + offset); }
+        ((labelLength / 2 + extraOffset) * boxScale * overscaling) % spacing;    
+    //if (firstPadding > 0 && continuedLine)  { console.log(labelLength + " " + firstPadding + " " + offset); }
 
     return resample(line, offset, spacing, angleWindowSize, maxAngle, labelLength * boxScale, false);
 }
@@ -68,7 +74,7 @@ function resample(line, offset, spacing, angleWindowSize, maxAngle, labelLength,
 
         distance += segmentDist;
     }
-
+/*
     if (!placeAtMiddle && !anchors.length) {
         // The first attempt at finding anchors at which labels can be placed failed.
         // Try again, but this time just try placing one anchor at the middle of the line.
@@ -76,7 +82,7 @@ function resample(line, offset, spacing, angleWindowSize, maxAngle, labelLength,
         // initial offset used in overscaled tiles is calculated to align labels with positions in
         // parent tiles instead of placing the label as close to the beginning as possible.
         anchors = resample(line, distance / 2, spacing, angleWindowSize, maxAngle, labelLength, true);
-    }
+    }*/
 
     return anchors;
 }
