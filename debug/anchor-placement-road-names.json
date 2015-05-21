@@ -2,6 +2,7 @@
   "version": 7,
   "name": "mapbox-streets-v7-copy",
   "constants": {
+    "@oneway-icon-repeat-distance": 15,
     "@poi-scalerank3": {
       "base": 1,
       "stops": [
@@ -2561,6 +2562,7 @@
       ],
       "layout": {
         "symbol-min-distance": 250,
+        "icon-repeat-distance": "@oneway-icon-repeat-distance",
         "symbol-placement": "line",
         "icon-image": {
           "base": 1,
@@ -2609,6 +2611,7 @@
       ],
       "layout": {
         "symbol-min-distance": 250,
+        "icon-repeat-distance": "@oneway-icon-repeat-distance",
         "symbol-placement": "line",
         "icon-image": {
           "base": 1,
@@ -3404,6 +3407,7 @@
       ],
       "layout": {
         "symbol-min-distance": 250,
+        "icon-repeat-distance": "@oneway-icon-repeat-distance",
         "symbol-placement": "line",
         "icon-image": {
           "base": 1,
@@ -3453,6 +3457,7 @@
       ],
       "layout": {
         "symbol-min-distance": 250,
+        "icon-repeat-distance": "@oneway-icon-repeat-distance",
         "symbol-placement": "line",
         "icon-image": {
           "base": 1,
@@ -4271,6 +4276,7 @@
       ],
       "layout": {
         "symbol-min-distance": 250,
+        "icon-repeat-distance": "@oneway-icon-repeat-distance",
         "symbol-placement": "line",
         "icon-image": {
           "base": 1,
@@ -4319,6 +4325,7 @@
       ],
       "layout": {
         "symbol-min-distance": 250,
+        "icon-repeat-distance": "@oneway-icon-repeat-distance",
         "symbol-placement": "line",
         "icon-image": {
           "base": 1,
@@ -4729,29 +4736,6 @@
       }
     },
     {
-      "id": "road-label-large_copy",
-      "type": "line",
-      "source": "composite",
-      "source-layer": "road_label",
-      "minzoom": 0,
-      "maxzoom": 22,
-      "interactive": true,
-      "filter": [
-        "all",
-        [
-          "in",
-          "class",
-          "main",
-          "motorway"
-        ]
-      ],
-      "layout": {},
-      "paint": {
-        "line-color": "blue",
-        "line-opacity": 0.1
-      }
-    }, 
-    {
       "id": "marine-label-lg-ln",
       "type": "symbol",
       "source": "composite",
@@ -4923,6 +4907,31 @@
       }
     },
     {
+      "id": "road-label-large_copy",
+      "type": "line",
+      "source": "composite",
+      "source-layer": "road_label",
+      "minzoom": 0,
+      "maxzoom": 22,
+      "interactive": true,
+      "filter": [
+        "all",
+        [
+          "in",
+          "class",
+          "main",
+          "motorway"
+        ]
+      ],
+      "layout": {
+        "visibility": "none"
+      },
+      "paint": {
+        "line-color": "blue",
+        "line-opacity": 0.1
+      }
+    }, 
+    {
       "id": "road-label-medium_copy",
       "type": "line",
       "source": "composite",
@@ -4944,7 +4953,9 @@
           "LineString"
         ]
       ],
-      "layout": {},
+      "layout": {
+        "visibility": "none"
+      },
       "paint": {
         "line-color": "purple",
         "line-opacity": 0.1
@@ -4974,7 +4985,9 @@
           "LineString"
         ]
       ],
-      "layout": {},
+      "layout": {
+        "visibility": "none"
+        },
       "paint": {
         "line-color": "red",
         "line-opacity": 0.5
@@ -5000,7 +5013,7 @@
       "layout": {
         "text-allow-overlap": false,
         "symbol-min-distance": 150,
-        "text-repeat-distance": 100,
+        "text-repeat-distance": 0,
         "text-ignore-placement": false,
         "text-max-angle": 30,
         "text-max-size": {
@@ -5068,7 +5081,7 @@
       ],
       "layout": {
         "symbol-min-distance": 150,
-        "text-repeat-distance": 100,
+        "text-repeat-distance": 0,
         "text-max-angle": 30,
         "text-max-size": {
           "base": 1,
@@ -5136,7 +5149,7 @@
       ],
       "layout": {
         "symbol-min-distance": 150,
-        "text-repeat-distance": 100,
+        "text-repeat-distance": 0,
         "text-ignore-placement": false,
         "text-max-angle": 30,
         "text-max-size": {
@@ -5221,7 +5234,7 @@
       ],
       "layout": {
         "symbol-min-distance": 250,
-        "text-repeat-distance": 200,
+        "text-repeat-distance": 0,
         "text-field": "{name_en}",
         "visibility": "visible",
         "text-font": "DIN Offc Pro Italic, Arial Unicode MS Regular",

@@ -4484,8 +4484,9 @@
       ],
       "layout": {
         "text-allow-overlap": false,
-        "symbol-min-distance": 200,
-        "text-repeat-distance": 125,
+        "symbol-min-distance": 150,
+        "text-repeat-distance": 100,
+        "icon-repeat-distance": 0,
         "icon-image": "{shield}-{reflen}-small",
         "icon-rotation-alignment": "viewport",
         "symbol-avoid-edges": false,
@@ -4577,8 +4578,9 @@
       ],
       "layout": {
         "text-allow-overlap": false,
-        "symbol-min-distance": 200,
-        "text-repeat-distance": 150,
+        "symbol-min-distance": 150,
+        "text-repeat-distance": 100,
+        "icon-repeat-distance": 0,
         "icon-image": "{shield}-{reflen}-small",
         "icon-rotation-alignment": "viewport",
         "symbol-avoid-edges": false,

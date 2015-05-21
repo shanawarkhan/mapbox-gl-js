@@ -6,7 +6,7 @@ var checkMaxAngle = require('./check_max_angle');
 
 module.exports = getAnchors;
 
-function getAnchors(line, spacing, firstPadding, maxAngle, shapedText, shapedIcon, glyphSize, boxScale, overscaling) {
+function getAnchors(line, spacing, repeatDistance, maxAngle, shapedText, shapedIcon, glyphSize, boxScale, overscaling) {
 
     // Resample a line to get anchor points for labels and check that each
     // potential label passes text-max-angle check and has enough froom to fit
@@ -16,26 +16,42 @@ function getAnchors(line, spacing, firstPadding, maxAngle, shapedText, shapedIco
         3 / 5 * glyphSize * boxScale :
         0;
 
-    // Offset the first anchor by half the label length (or half the spacing distance for icons).
-    // Add a bit of extra offset to avoid collisions at T intersections.
-    //var labelLength = shapedText ? shapedText.right - shapedText.left : spacing;
+    // Offset the first anchor by half the label length, plus either the -repeat-distance length
+    // (if the line continued from outside the tile boundary), or a set extra offset.
+
+    /* 
+    // Not sure if this works. Rewrote as nested if/else statement.
     var labelLength = shapedText && shapedIcon ?
         Math.max(shapedText.right - shapedText.left, shapedIcon.right - shapedIcon.left) :
         shapedText ?
         shapedText.right - shapedText.left :
         shapedIcon.right - shapedIcon.left;
+        */
 
+    if (shapedText) {
+        if (shapedIcon) {
+            var labelLength = Math.max(shapedText.right - shapedText.left, shapedIcon.right - shapedIcon.left); 
+        } else {
+            var labelLength = shapedText.right - shapedText.left;
+        } 
+    } else {
+        var labelLength = shapedIcon.right - shapedIcon.left;
+    }   
+
+    // Add a bit of extra offset to avoid collisions at T intersections.
     var extraOffset = glyphSize * 2;
-    //var offset = ((labelLength / 2 + extraOffset) * boxScale * overscaling) % spacing;
 
+    // Is the line continued from outside the tile boundary?
     if ((line[0].x == (0 || 4096)) || (line[0].y == (0 || 4096))) {
         var continuedLine = true;
     }
+
     //(continuedLine) { console.log(firstPoint.x + " " + firstPoint.y + " " + continuedLine); }
-    var offset = (firstPadding > 0 && continuedLine) ? 
-        ((labelLength / 2 + firstPadding) * boxScale * overscaling) :
+    var offset = (repeatDistance > 0 && continuedLine) ? 
+        ((labelLength / 2 + repeatDistance) * boxScale * overscaling) :
         ((labelLength / 2 + extraOffset) * boxScale * overscaling) % spacing;    
     //if (firstPadding > 0 && continuedLine)  { console.log(labelLength + " " + firstPadding + " " + offset); }
+    console.log(repeatDistance + " " + offset);
 
     return resample(line, offset, spacing, angleWindowSize, maxAngle, labelLength * boxScale, false);
 }
@@ -74,7 +90,7 @@ function resample(line, offset, spacing, angleWindowSize, maxAngle, labelLength,
 
         distance += segmentDist;
     }
-/*
+
     if (!placeAtMiddle && !anchors.length) {
         // The first attempt at finding anchors at which labels can be placed failed.
         // Try again, but this time just try placing one anchor at the middle of the line.
@@ -82,7 +98,7 @@ function resample(line, offset, spacing, angleWindowSize, maxAngle, labelLength,
         // initial offset used in overscaled tiles is calculated to align labels with positions in
         // parent tiles instead of placing the label as close to the beginning as possible.
         anchors = resample(line, distance / 2, spacing, angleWindowSize, maxAngle, labelLength, true);
-    }*/
+    }
 
     return anchors;
 }

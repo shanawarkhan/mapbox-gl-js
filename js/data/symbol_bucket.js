@@ -143,7 +143,7 @@ SymbolBucket.prototype.addFeature = function(lines, shapedText, shapedIcon) {
         symbolMinDistance = collision.tilePixelRatio * layout['symbol-min-distance'],
         textRepeatDistance = collision.tilePixelRatio * layout['text-repeat-distance'],
         iconRepeatDistance = collision.tilePixelRatio * layout['icon-repeat-distance'],
-        firstPadding = Math.max(layout['text-repeat-distance'], layout['icon-repeat-distance']),
+        repeatDistance = Math.max(layout['text-repeat-distance'], layout['icon-repeat-distance']),
         avoidEdges = layout['symbol-avoid-edges'],
         textPadding = layout['text-padding'] * collision.tilePixelRatio,
         iconPadding = layout['icon-padding'] * collision.tilePixelRatio,
@@ -160,7 +160,7 @@ SymbolBucket.prototype.addFeature = function(lines, shapedText, shapedIcon) {
 
         // Calculate the anchor points around which you want to place labels
         var anchors = layout['symbol-placement'] === 'line' ?
-            getAnchors(line, symbolMinDistance, firstPadding, textMaxAngle, shapedText, shapedIcon, glyphSize, textBoxScale, this.overscaling) :
+            getAnchors(line, symbolMinDistance, repeatDistance, textMaxAngle, shapedText, shapedIcon, glyphSize, textBoxScale, this.overscaling) :
             [ new Anchor(line[0].x, line[0].y, 0) ];
 
         // For each potential label, create the placement features used to check for collisions, and the quads use for rendering.
@@ -186,7 +186,7 @@ SymbolBucket.prototype.addFeature = function(lines, shapedText, shapedIcon) {
                           //console.log(textRepeatDistance);
                           //console.log(anchor);
                           anchor.skip = true; // do I need to add a skip property value of false to the rest?
-                          console.log(anchor.skip);
+                          //console.log(anchor.skip);
                           break; // If it's within textRepeatDistance of 1 anchor, stop looking
                         } 
                     }
@@ -218,7 +218,7 @@ SymbolBucket.prototype.addFeature = function(lines, shapedText, shapedIcon) {
 
             var inside = !(anchor.x < 0 || anchor.x > 4096 || anchor.y < 0 || anchor.y > 4096);
 
-            //console.log(anchor.skip);
+            console.log(anchor.skip);
             if ((anchor.skip) || (avoidEdges && !inside)) continue;
             
 
