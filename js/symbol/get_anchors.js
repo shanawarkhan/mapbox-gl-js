@@ -6,7 +6,7 @@ var checkMaxAngle = require('./check_max_angle');
 
 module.exports = getAnchors;
 
-function getAnchors(line, spacing, repeatDistance, maxAngle, shapedText, shapedIcon, glyphSize, boxScale, overscaling) {
+function getAnchors(line, spacing, maxRepeatDistance, maxAngle, shapedText, shapedIcon, glyphSize, boxScale, overscaling) {
 
     // Resample a line to get anchor points for labels and check that each
     // potential label passes text-max-angle check and has enough froom to fit
@@ -47,17 +47,19 @@ function getAnchors(line, spacing, repeatDistance, maxAngle, shapedText, shapedI
     }
 
     //(continuedLine) { console.log(firstPoint.x + " " + firstPoint.y + " " + continuedLine); }
-    var offset = (repeatDistance > 0 && continuedLine) ? 
-        ((labelLength / 2 + repeatDistance) * boxScale * overscaling) :
+    //var offset = (repeatDistance > 0 && continuedLine) ? 
+    // Maybe add another condition to use repeatDistnace value first if there is one
+      var offset = continuedLine ? 
+        ((labelLength / 2 + spacing / 2) * boxScale * overscaling) % spacing :
         ((labelLength / 2 + extraOffset) * boxScale * overscaling) % spacing;    
-    //if (firstPadding > 0 && continuedLine)  { console.log(labelLength + " " + firstPadding + " " + offset); }
-    console.log(repeatDistance + " " + offset);
 
-    return resample(line, offset, spacing, angleWindowSize, maxAngle, labelLength * boxScale, false);
+    console.log(maxRepeatDistance + " " + offset);
+
+    return resample(line, offset, spacing, angleWindowSize, maxAngle, labelLength * boxScale, continuedLine, false);
 }
 
 
-function resample(line, offset, spacing, angleWindowSize, maxAngle, labelLength, placeAtMiddle) {
+function resample(line, offset, spacing, angleWindowSize, maxAngle, labelLength, continuedLine, placeAtMiddle) {
 
     var distance = 0,
         markedDistance = offset ? offset - spacing : 0;
@@ -91,13 +93,13 @@ function resample(line, offset, spacing, angleWindowSize, maxAngle, labelLength,
         distance += segmentDist;
     }
 
-    if (!placeAtMiddle && !anchors.length) {
+    if (!placeAtMiddle && !anchors.length && !continuedLine) {
         // The first attempt at finding anchors at which labels can be placed failed.
         // Try again, but this time just try placing one anchor at the middle of the line.
         // This has the most effect for short lines in overscaled tiles, since the
         // initial offset used in overscaled tiles is calculated to align labels with positions in
         // parent tiles instead of placing the label as close to the beginning as possible.
-        anchors = resample(line, distance / 2, spacing, angleWindowSize, maxAngle, labelLength, true);
+        anchors = resample(line, distance / 2, spacing, angleWindowSize, maxAngle, labelLength, continuedLine, true);
     }
 
     return anchors;
