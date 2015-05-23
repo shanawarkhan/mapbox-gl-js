@@ -48,12 +48,12 @@ function getAnchors(line, spacing, maxRepeatDistance, maxAngle, shapedText, shap
 
     //(continuedLine) { console.log(firstPoint.x + " " + firstPoint.y + " " + continuedLine); }
     //var offset = (repeatDistance > 0 && continuedLine) ? 
-    // Maybe add another condition to use repeatDistnace value first if there is one
+    // Maybe add another condition to use repeatDistance value first if there is one
       var offset = continuedLine ? 
-        ((labelLength / 2 + spacing / 2) * boxScale * overscaling) % spacing :
+        ((labelLength / 2 + spacing / 2) * boxScale * overscaling) % spacing : //first instance of spacing is wrong? should not be * tilePixelRatio
         ((labelLength / 2 + extraOffset) * boxScale * overscaling) % spacing;    
 
-    console.log(maxRepeatDistance + " " + offset);
+    console.log(labelLength + " " + spacing + " " + offset);
 
     return resample(line, offset, spacing, angleWindowSize, maxAngle, labelLength * boxScale, continuedLine, false);
 }

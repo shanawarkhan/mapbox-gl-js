@@ -167,12 +167,12 @@ SymbolBucket.prototype.addFeature = function(lines, shapedText, shapedIcon) {
         for (var j = 0, len = anchors.length; j < len; j++) {
             var anchor = anchors[j];
 
-            if (shapedText && (textRepeatDistance > 0)) {
+            if (shapedText && textRepeatDistance > 0) {
                 var text = shapedText.text;
                 compareSymbol(text, compareText, textRepeatDistance);
             }    
 
-            if (shapedIcon && (iconRepeatDistance > 0)) {
+            if (shapedIcon && iconRepeatDistance > 0) {
                 var iconName = shapedIcon.iconName;
                 compareSymbol(iconName, compareIcon, iconRepeatDistance);
 
