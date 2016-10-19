@@ -54,10 +54,13 @@ RasterTileSource.prototype = util.inherit(Evented, {
         function done(err, img) {
             delete tile.request;
 
-            if (tile.aborted)
-                return;
+            if (tile.aborted) {
+                this.state = 'unloaded';
+                return callback(null);
+            }
 
             if (err) {
+                this.state = 'errored';
                 return callback(err);
             }
 
